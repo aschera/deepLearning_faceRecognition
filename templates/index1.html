@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Detection with Emotion</title>
+</head>
+<body>
+    <div style="position: relative;">
+        <img src="{{ url_for('video_feed') }}" width="640" height="480" />
+        {% for face in faces %}
+            <div style="position: absolute; top: {{ face.y }}px; left: {{ face.x }}px;">
+                <span style="background-color: rgba(255, 255, 255, 0.7); padding: 5px;">{{ face.emotion }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

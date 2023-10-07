@@ -2,62 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Emotion Detector</title>
+    <title>Face Detection</title>
 </head>
 <body>
-<video id="video" width="640" height="480" autoplay style="display: none"></video>
-<canvas id="canvas" width="640" height="480"></canvas>
-<script>
-    var video = document.getElementById('video');
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
-            video.srcObject = stream;
-            video.play();
-        });
-    }
-
-    video.addEventListener('play', function () {
-        var $this = this;
-        (function loop() {
-            if (!$this.paused && !$this.ended) {
-                context.drawImage($this, 0, 0, 640, 480);
-
-                // Convert the canvas to a data URL
-                var dataURL = canvas.toDataURL('image/jpeg');
-
-                // Send the data URL to the server for emotion prediction
-                fetch('/predict_emotion', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ image_data: dataURL })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Display the predicted emotion in a rectangle around the face
-                    var x = 10;  // X-coordinate for the rectangle
-                    var y = 10;  // Y-coordinate for the rectangle
-                    var width = 250;  // Width of the rectangle
-                    var height = 40;  // Height of the rectangle
-
-                    // Draw a rectangle
-                    context.fillStyle = 'rgba(25, 255, 100, 1)';  // Green with some transparency
-                    context.fillRect(x, y, width, height);
-
-                    // Display the predicted emotion text inside the rectangle
-                    context.font = '24px Arial';
-                    context.fillStyle = 'white';
-                    context.fillText('Emotion: ' + data.emotion, x + 10, y + 30);
-                });
-
-                setTimeout(loop, 1000 / 30);  // 30 frames per second
-            }
-        })();
-    }, 0);
-</script>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480" />
 </body>
 </html>
